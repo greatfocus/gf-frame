@@ -3,12 +3,6 @@ on:
   push:
     tags:
       - v*
-  release:
-    types:
-      - created
-    tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+'
-      - '**/v[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   release:
@@ -30,9 +24,3 @@ jobs:
             Release ${{ github.ref }}
           draft: true
           prerelease: false
-  build:
-    name: Renew documentation
-    runs-on: ubuntu-latest
-    steps:
-    - name: Pull new module version
-      uses: andrewslotin/go-proxy-pull-action@master

@@ -7,6 +7,7 @@ GO_FILES := $(shell find . -name '*.go' | grep -v /vendor/ | grep -v _test.go)
 all: build
 
 dep: ## Get the dependencies
+	@go clean -cache -modcache -i -r
 	@go mod download
 
 lint: ## Lint Golang files
