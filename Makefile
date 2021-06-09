@@ -27,6 +27,10 @@ build: dep ## Build the binary file
  
 clean: ## Remove previous build
 	@rm -f $(PROJECT_NAME)/build
+
+update-pkg-cache:
+    GOPROXY=https://proxy.golang.org GO111MODULE=on \
+    go get github.com/greatfocus/$(PROJECT_NAME)@v$(VERSION)
  
 help: ## Display this help screen
 	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
