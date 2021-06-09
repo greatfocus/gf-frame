@@ -72,7 +72,7 @@ func (d *db) connect(dbConfig config.DatabaseType) {
 	// execute database scripts
 	if dbConfig.ExecuteSchema {
 		d.executeSchema(conn)
-		d.rebuildIndexes(conn, dbConfig.Database)
+		d.RebuildIndexes(conn, dbConfig.Database)
 	}
 	d.conn = conn
 }
@@ -104,7 +104,7 @@ func (d *db) executeSchema(db *sql.DB) {
 }
 
 // RebuildIndexes within frame
-func (d *db) rebuildIndexes(db *sql.DB, dbname string) {
+func (d *db) RebuildIndexes(db *sql.DB, dbname string) {
 	log.Println("Rebuild Indexes")
 
 	// Rebuild Indexes
