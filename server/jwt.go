@@ -5,8 +5,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/greatfocus/gf-frame/config"
 	gfjwt "github.com/greatfocus/gf-jwt"
+	"github.com/greatfocus/gf-sframe/config"
 )
 
 // Token struct

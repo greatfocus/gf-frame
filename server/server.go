@@ -12,8 +12,8 @@ import (
 	gfcache "github.com/greatfocus/gf-cache"
 	gfcron "github.com/greatfocus/gf-cron"
 	gfdispatcher "github.com/greatfocus/gf-dispatcher"
-	"github.com/greatfocus/gf-frame/config"
-	"github.com/greatfocus/gf-frame/database"
+	"github.com/greatfocus/gf-sframe/config"
+	"github.com/greatfocus/gf-sframe/database"
 )
 
 // HandlerFunc custom server handler

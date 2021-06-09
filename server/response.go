@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/greatfocus/gf-frame/crypt"
+	"github.com/greatfocus/gf-sframe/crypt"
 )
 
 // Response data

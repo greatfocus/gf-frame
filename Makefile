@@ -1,4 +1,4 @@
-PROJECT_NAME := "gf-frame"
+PROJECT_NAME := "gf-sframe"
 PKG := "github.com/greatfocus/$(PROJECT_NAME)"
 GO_FILES := $(shell find . -name '*.go' | grep -v /vendor/ | grep -v _test.go)
  
@@ -24,7 +24,7 @@ test-coverage: ## Run tests with coverage
 	@cat cover.out >> coverage.txt
 
 build: dep ## Build the binary file
-	@go build -i -o build/gf-frame $(PKG)
+	@go build -i -o build/gf-sframe $(PKG)
  
 clean: ## Remove previous build
 	@rm -f $(PROJECT_NAME)/build

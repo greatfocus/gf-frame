@@ -1,4 +1,4 @@
-module github.com/greatfocus/gf-frame
+module github.com/greatfocus/gf-sframe
 
 go 1.14
 

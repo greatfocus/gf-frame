@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/greatfocus/gf-frame/config"
+	"github.com/greatfocus/gf-sframe/config"
 )
 
 // Conn struct
@@ -103,7 +103,7 @@ func (d *db) executeSchema(db *sql.DB) {
 	log.Println("Database scripts successfully executed")
 }
 
-// RebuildIndexes within frame
+// RebuildIndexes within sframe
 func (d *db) RebuildIndexes(db *sql.DB, dbname string) {
 	log.Println("Rebuild Indexes")
 
