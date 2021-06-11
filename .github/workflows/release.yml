@@ -26,6 +26,7 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
-          body_path: Release ${{ github.ref }}
+          body: |
+            Release ${{ github.ref }}
           draft: false
           prerelease: false
