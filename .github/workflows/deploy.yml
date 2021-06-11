@@ -1,0 +1,33 @@
+name: Deploy
+workflow_run:
+    workflows: ["Release"]
+    types: 
+      - completed
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  release:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v1
+
+      - name: Copying files to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{secrets.SSH_HOST}}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            mkdir -p ~/my-express-app/ # create a new folder
+            cd ~/my-express-app/ # navigate into the folder
+            git clone https://github.com/Bradleykingz/github-actions-tutorial app # clone the repo into the 'app' folder
+            cd github-actions-tutorial # navigate into the repo
+            npm install # install dependencies 
+            pm2 start app.js # start as a background service.
+
+

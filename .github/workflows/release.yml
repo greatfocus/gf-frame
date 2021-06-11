@@ -1,4 +1,8 @@
 name: Release
+workflow_run:
+    workflows: ["Test"]
+    types: 
+      - completed
 on:
   push:
     tags:
@@ -6,7 +10,7 @@ on:
 
 jobs:
   release:
-    name: Create Release
+    name: Release
     runs-on: ubuntu-latest
     steps:
       - name: Check out code

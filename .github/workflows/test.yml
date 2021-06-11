@@ -1,5 +1,8 @@
 name: Test
-
+workflow_run:
+    workflows: ["Build"]
+    types: 
+      - completed
 on:
   push:
     branches: []
