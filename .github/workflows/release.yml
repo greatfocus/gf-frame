@@ -3,12 +3,10 @@ on:
   workflow_run:
     workflows: ["Test"]
     branches: [main]
-    tags: [ v*]
+    push:
+      tags: [ v*]
     types: 
       - completed
-  push:
-    tags:
-      - v*
 
 jobs:
   release:
