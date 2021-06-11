@@ -1,9 +1,9 @@
 name: Release
-workflow_run:
+on:
+  workflow_run:
     workflows: ["Test"]
     types: 
       - completed
-on:
   push:
     tags:
       - v*

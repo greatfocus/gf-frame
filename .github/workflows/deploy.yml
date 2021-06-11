@@ -1,12 +1,9 @@
 name: Deploy
-workflow_run:
+on:
+  workflow_run:
     workflows: ["Release"]
     types: 
       - completed
-on:
-  push:
-    tags:
-      - v*
 
 jobs:
   release:
