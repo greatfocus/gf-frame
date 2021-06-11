@@ -2,6 +2,8 @@ name: Release
 on:
   workflow_run:
     workflows: ["Test"]
+    branches: [main]
+    tags: [ v*]
     types: 
       - completed
   push:
@@ -24,6 +26,6 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
-          body_path: CHANGELOG.md
+          body_path: Release ${{ github.ref }}
           draft: false
           prerelease: false
