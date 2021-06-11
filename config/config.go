@@ -34,14 +34,6 @@ type Secure struct {
 	User     string `json:"user"`
 	Password string `json:"password"`
 	SslMode  bool   `json:"sslmode"`
-	TLS      TLS    `json:"tls"`
-}
-
-// TLS struct config
-type TLS struct {
-	Cert   string `json:"cert"`
-	Key    string `json:"key"`
-	Domain string `json:"domain"`
 }
 
 // JWT struct config
@@ -166,16 +158,6 @@ func validateDefault(c *Config) {
 	if c.Env == "" {
 		err = errors.New("please configure env in setting file")
 		log.Fatal(fmt.Println(err))
-	}
-	if c.Env == "prod" {
-		if c.Server.Secure.TLS.Cert == "" {
-			err = errors.New("please configure secure cert in setting file")
-			log.Fatal(fmt.Println(err))
-		}
-		if c.Server.Secure.TLS.Key == "" {
-			err = errors.New("please configure secure key in setting file")
-			log.Fatal(fmt.Println(err))
-		}
 	}
 	if c.Server.Port == "" {
 		err = errors.New("please configure server port in setting file")

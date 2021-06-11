@@ -2,8 +2,6 @@ package config
 
 import (
 	"bytes"
-	"crypto/tls"
-	"crypto/x509"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -11,6 +9,8 @@ import (
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/greatfocus/gf-sframe/crypt"
 )
 
 // Vault struct
@@ -42,7 +42,7 @@ func (v *Vault) GetConfig(file string) Config {
 	client := http.Client{
 		Timeout: time.Minute * 3,
 		Transport: &http.Transport{
-			TLSClientConfig: TLSClientConfig(),
+			TLSClientConfig: crypt.TLSClientConfig(),
 		},
 	}
 
@@ -108,28 +108,4 @@ func (v *Vault) read(file string) Vault {
 	_ = jsonFile.Close()
 
 	return result
-}
-
-// TLSClientConfig update cert and key
-func TLSClientConfig() *tls.Config {
-	// Read the key pair to create certificate
-	cert, err := tls.LoadX509KeyPair(os.Args[3], os.Args[4])
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Create a CA certificate pool and add cert.pem to it
-	caCert, err := ioutil.ReadFile(os.Args[3])
-	if err != nil {
-		log.Fatal(err)
-	}
-	caCertPool := x509.NewCertPool()
-	caCertPool.AppendCertsFromPEM(caCert)
-
-	return &tls.Config{
-		RootCAs:            caCertPool,
-		Certificates:       []tls.Certificate{cert},
-		MinVersion:         tls.VersionTLS12,
-		InsecureSkipVerify: false,
-	}
 }

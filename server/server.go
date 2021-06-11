@@ -1,11 +1,9 @@
 package server
 
 import (
-	"crypto/tls"
-	"io/ioutil"
 	"log"
 	"net/http"
-	"path/filepath"
+	"os"
 	"time"
 
 	gfbus "github.com/greatfocus/gf-bus"
@@ -13,6 +11,7 @@ import (
 	gfcron "github.com/greatfocus/gf-cron"
 	gfdispatcher "github.com/greatfocus/gf-dispatcher"
 	"github.com/greatfocus/gf-sframe/config"
+	"github.com/greatfocus/gf-sframe/crypt"
 	"github.com/greatfocus/gf-sframe/database"
 )
 
@@ -58,40 +57,15 @@ func (m *Meta) serve() {
 		WriteTimeout:   time.Duration(m.Config.Server.Timeout) * time.Second,
 		MaxHeaderBytes: 1 << 20,
 		Handler:        m.Mux,
-		TLSConfig:      tlsConfig(m),
 	}
 
 	// create server connection
 	if m.Config.Env == "prod" {
+		srv.TLSConfig = crypt.TLSServerConfig()
 		log.Println("Listening to port secure HTTPS", addr)
-		log.Fatal(srv.ListenAndServeTLS("", ""))
+		log.Fatal(srv.ListenAndServeTLS(os.Args[4], os.Args[5]))
 	} else {
 		log.Println("Listening to port HTTP", addr)
 		log.Fatal(srv.ListenAndServe())
-	}
-}
-
-// tlsConfig update cert and key
-func tlsConfig(m *Meta) *tls.Config {
-	// load certificate file
-	crt, err := ioutil.ReadFile(filepath.Clean(m.Config.Server.Secure.TLS.Cert))
-	if err != nil {
-		log.Fatalf("error reading CA certificate: %v", err)
-	}
-
-	// load certificate key
-	ky, err := ioutil.ReadFile(filepath.Clean(m.Config.Server.Secure.TLS.Key))
-	if err != nil {
-		log.Fatalf("error reading CA certificate: %v", err)
-	}
-
-	cert, err := tls.X509KeyPair(crt, ky)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return &tls.Config{
-		Certificates: []tls.Certificate{cert},
-		ServerName:   m.Config.Server.Secure.TLS.Domain,
 	}
 }
