@@ -4,14 +4,20 @@ on:
     tags: v[0-9]+.[0-9]+.[0-9]+*
 
 jobs:
-  release:
-    name: Release
+  build:
+    name: Build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: gf-frame
+    environment:
+      name: build
+      url: ${{ steps.create_release.outputs.html_url }}
     steps:
       - name: Check out code
         uses: actions/checkout@v1
 
-      - name: Create Release
+      - name: Create Tag
         id: create_release
         uses: actions/create-release@v1
         env:
@@ -21,5 +27,61 @@ jobs:
           release_name: Release ${{ github.ref }}
           body: |
             Release ${{ github.ref }}
-          draft: false
+          draft: true
           prerelease: false
+
+      - name: Build Package
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.14
+        run: make build
+
+      - name: Upload Package
+        uses: actions/upload-artifact@v2
+        with:
+          name: package
+          path: "gf-frame/*.tgz"
+      - run: echo "tag=${GITHUB_REF##*/v}" >> $GITHUB_ENV
+
+      - name: Upload package to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.DEPLOY_ACCESS }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: "gf-frame/greatfocus-gf-frame-${{ env.tag }}.tgz"
+          asset_name: "greatfocus-gf-frame-${{ env.tag }}.tgz"
+          asset_content_type: application/zip
+      - run: echo ${{ steps.create_release.outputs.id }} >> release.txt
+
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: release_id
+          path: gf-frame/release.txt
+
+  release:
+    name: Release
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    steps:
+      - name: Download package
+        uses: actions/download-artifact@v2
+        with:
+          name: release_id
+      - run: echo "release_id=$(cat release.txt)" >> $GITHUB_ENV
+
+      - name: Publish release
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+              github.repos.updateRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                release_id: process.env.release_id,
+                draft: false
+              })
+
