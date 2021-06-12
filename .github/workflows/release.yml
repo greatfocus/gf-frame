@@ -42,7 +42,7 @@ jobs:
       - name: Publish release
         uses: actions/github-script@v3
         with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
+          github-token: ${{secrets.DEPLOY_ACCESS}}
           script: |
               github.repos.updateRelease({
                 owner: context.repo.owner,
