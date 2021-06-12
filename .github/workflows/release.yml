@@ -32,10 +32,12 @@ jobs:
           draft: true
           prerelease: false
 
-      - name: Build Package
+      - name: Set up Go
         uses: actions/setup-go@v1
         with:
           go-version: 1.14
+
+      - name: Build Package
         run: make build
 
       - name: Upload Package
@@ -43,6 +45,7 @@ jobs:
         with:
           name: package
           path: "gf-frame/*.tgz"
+
       - run: echo "tag=${GITHUB_REF##*/v}" >> $GITHUB_ENV
 
       - name: Upload package to release
@@ -54,6 +57,7 @@ jobs:
           asset_path: "gf-frame/greatfocus-gf-frame-${{ env.tag }}.tgz"
           asset_name: "greatfocus-gf-frame-${{ env.tag }}.tgz"
           asset_content_type: application/zip
+
       - run: echo ${{ steps.create_release.outputs.id }} >> release.txt
 
       - name: Upload
@@ -73,6 +77,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: release_id
+
       - run: echo "release_id=$(cat release.txt)" >> $GITHUB_ENV
 
       - name: Publish release
