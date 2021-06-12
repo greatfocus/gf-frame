@@ -1,9 +1,15 @@
 name: Build
 on:
   push:
-    branches: []
-  pull_request:
-    branches: []
+      branches:
+        - main
+        - test
+        - release
+    pull_request:
+      branches:
+        - main
+        - test
+        - release
 
 jobs:
   imports:
