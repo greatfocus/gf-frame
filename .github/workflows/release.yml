@@ -32,16 +32,6 @@ jobs:
           draft: true
           prerelease: false
 
-      - name: Set up Go
-        uses: actions/setup-go@v1
-        with:
-          go-version: 1.14
-
-      - name: Build Package
-      - run: |
-          go mod tidy
-          go build
-
       - name: Upload Package
         uses: actions/upload-artifact@v2
         with:
