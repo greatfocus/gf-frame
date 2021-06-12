@@ -1,15 +1,14 @@
 name: Build
-on:
-  push:
-      branches:
-        - main
-        - test
-        - release
-    pull_request:
-      branches:
-        - main
-        - test
-        - release
+push:
+    branches:
+      - main
+      - test
+      - release
+  pull_request:
+    branches:
+      - main
+      - test
+      - release
 
 jobs:
   imports:
