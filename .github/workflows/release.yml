@@ -32,32 +32,6 @@ jobs:
           draft: true
           prerelease: false
 
-      - name: Upload Package
-        uses: actions/upload-artifact@v2
-        with:
-          name: package
-          path: "gf-frame/*.tgz"
-
-      - run: echo "tag=${GITHUB_REF##*/v}" >> $GITHUB_ENV
-
-      - name: Upload package to release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.DEPLOY_ACCESS }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: "gf-frame/greatfocus-gf-frame-${{ env.tag }}.tgz"
-          asset_name: "greatfocus-gf-frame-${{ env.tag }}.tgz"
-          asset_content_type: application/zip
-
-      - run: echo ${{ steps.create_release.outputs.id }} >> release.txt
-
-      - name: Upload
-        uses: actions/upload-artifact@v2
-        with:
-          name: release_id
-          path: gf-frame/release.txt
-
   release:
     name: Release
     needs: build
@@ -65,13 +39,6 @@ jobs:
     environment:
       name: production
     steps:
-      - name: Download package
-        uses: actions/download-artifact@v2
-        with:
-          name: release_id
-
-      - run: echo "release_id=$(cat release.txt)" >> $GITHUB_ENV
-
       - name: Publish release
         uses: actions/github-script@v3
         with:
