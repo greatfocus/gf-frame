@@ -31,23 +31,3 @@ jobs:
             Release ${{ github.ref }}
           draft: true
           prerelease: false
-
-  release:
-    name: Release
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: production
-    steps:
-      - name: Publish release
-        uses: actions/github-script@v3
-        with:
-          github-token: ${{secrets.DEPLOY_ACCESS}}
-          script: |
-              github.repos.updateRelease({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                release_id: process.env.release_id,
-                draft: false
-              })
-
