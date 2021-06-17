@@ -6,15 +6,9 @@ on:
       - 'v*'
 
 jobs:
-  build:
-    name: Build
+  release:
+    name: Release
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: gf-frame
-    environment:
-      name: build
-      url: ${{ steps.create_release.outputs.html_url }}
     steps:
       - name: Check out code
         uses: actions/checkout@v1
