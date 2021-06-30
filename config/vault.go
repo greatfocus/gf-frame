@@ -29,7 +29,7 @@ func (v *Vault) GetConfig(file string) Config {
 	request := Vault{
 		Application: val.Application,
 		Impl:        val.Impl,
-		Env:         os.Args[1],
+		Env:         val.Env,
 	}
 	reqBody, err := json.Marshal(request)
 	if err != nil {
