@@ -32,6 +32,6 @@ func GetPayload(w http.ResponseWriter, r *http.Request) (bool, []byte) {
 	}
 
 	// decrypt the string and return byte
-	payload := crypt.Decrypt(req.Payload, os.Args[2])
+	payload := crypt.Decrypt(req.Payload, os.Args[4])
 	return true, []byte(payload)
 }

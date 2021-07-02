@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"strconv"
@@ -26,17 +25,17 @@ type db struct {
 }
 
 // Init database connection for Master and Slave
-func (c *Conn) Init(config *config.Config) {
+func (c *Conn) Init(config *config.Config, impl *config.Impl) {
 	var master = db{}
-	master.connect(config.Database.Master)
+	master.connect(config.Database.Master, impl)
 	var slave = db{}
-	slave.connect(config.Database.Master)
+	slave.connect(config.Database.Master, impl)
 	c.master = &master
 	c.slave = &slave
 }
 
 // Connect method make a database connection
-func (d *db) connect(dbConfig config.DatabaseType) {
+func (d *db) connect(dbConfig config.DatabaseType, impl *config.Impl) {
 	// initialize variables rom config
 	log.Println("Preparing Database configuration")
 	host := dbConfig.Host
@@ -44,8 +43,8 @@ func (d *db) connect(dbConfig config.DatabaseType) {
 	user := dbConfig.User
 	password := dbConfig.Password
 	sslmode := "disable"
-	cert := os.Args[6]
-	key := os.Args[7]
+	cert := os.Args[8]
+	key := os.Args[9]
 	if dbConfig.Secure.SslMode {
 		sslmode = "require"
 	}
@@ -72,30 +71,20 @@ func (d *db) connect(dbConfig config.DatabaseType) {
 
 	// execute database scripts
 	if dbConfig.ExecuteSchema {
-		d.executeSchema(conn)
+		d.executeSchema(conn, impl.Scripts)
 		d.RebuildIndexes(conn, dbConfig.Database)
 	}
 	d.conn = conn
 }
 
 // ExecuteSchema prepare and execute database changes
-func (d *db) executeSchema(db *sql.DB) {
+func (d *db) executeSchema(db *sql.DB, scripts map[string]string) {
 	// read the scripts in the folder
-	var path = "./scripts/"
 	log.Println("Preparing to execute database schema")
-	files, err := ioutil.ReadDir(path)
-	if err != nil {
-		log.Fatal(fmt.Println(err))
-	}
-
 	// loop thru files to create schemas
-	for _, f := range files {
-		c, ioErr := ioutil.ReadFile(path + f.Name())
-		if ioErr != nil {
-			log.Fatal(fmt.Println(err))
-		}
-		sql := string(c)
-		log.Println("Executing schema: ", path+f.Name())
+	for key, script := range scripts {
+		sql := string(script)
+		log.Println("Executing schema: ", key)
 		if _, err := db.Exec(sql); err != nil {
 			log.Fatal(fmt.Println(err))
 		}

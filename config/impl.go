@@ -13,30 +13,31 @@ import (
 	"github.com/greatfocus/gf-sframe/crypt"
 )
 
-// Vault struct
-type Vault struct {
-	URL         string `json:"url"`
-	Application string `json:"application"`
-	Impl        string `json:"impl"`
-	Env         string `json:"env"`
+// Impl struct
+type Impl struct {
+	Vault       string            `json:"vault"`
+	Application string            `json:"application"`
+	Impl        string            `json:"impl"`
+	Env         string            `json:"env"`
+	Scripts     map[string]string `json:"scripts"`
 }
 
-// GetConfig method gets configf from vault
-func (v *Vault) GetConfig(file string) Config {
-	// read vault config
-	var val = v.read(file)
+// GetConfig method gets configf from impl
+func (i *Impl) GetConfig() Config {
+	// read impl config
+	var val = i.read(i.Env + ".json")
 
-	request := Vault{
+	request := Impl{
 		Application: val.Application,
 		Impl:        val.Impl,
 		Env:         val.Env,
 	}
 	reqBody, err := json.Marshal(request)
 	if err != nil {
-		log.Fatal(fmt.Println("Failed to get Vault config", err))
+		log.Fatal(fmt.Println("Failed to get Impl config", err))
 	}
 	if err != nil {
-		log.Fatal(fmt.Println("Failed to get Vault config", err))
+		log.Fatal(fmt.Println("Failed to get Impl config", err))
 	}
 
 	client := http.Client{
@@ -46,10 +47,10 @@ func (v *Vault) GetConfig(file string) Config {
 		},
 	}
 
-	// make API call to vault
-	resp, err := client.Post(val.URL, "application/json", bytes.NewReader(reqBody))
+	// make API call to impl
+	resp, err := client.Post(val.Vault, "application/json", bytes.NewReader(reqBody))
 	if err != nil {
-		log.Fatal(fmt.Println("Failed to get Vault config"))
+		log.Fatal(fmt.Println("Failed to get Impl config"))
 	}
 
 	defer func() {
@@ -58,19 +59,19 @@ func (v *Vault) GetConfig(file string) Config {
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatal(fmt.Println("Failed to get Vault config"))
+		log.Fatal(fmt.Println("Failed to get Impl config"))
 	}
 
 	// marshal te response
 	var config Config
 	err = json.Unmarshal(body, &config)
 	if err != nil {
-		log.Fatal(fmt.Println("Failed to get Vault config"))
+		log.Fatal(fmt.Println("Failed to get Impl config"))
 	}
 
 	// verify response
 	if config.Impl == "" {
-		log.Fatal(fmt.Println("Failed to get Vault config"))
+		log.Fatal(fmt.Println("Failed to get Impl config"))
 	}
 
 	// validate
@@ -79,7 +80,7 @@ func (v *Vault) GetConfig(file string) Config {
 	return config
 }
 
-func (v *Vault) read(file string) Vault {
+func (i *Impl) read(file string) Impl {
 	log.Println("Reading configuration file")
 	if len(file) < 1 {
 		log.Fatal(fmt.Println("config file name is empty"))
@@ -98,7 +99,7 @@ func (v *Vault) read(file string) Vault {
 	}
 
 	// convert the config file bytes to json
-	var result = Vault{}
+	var result = Impl{}
 	err = json.Unmarshal([]byte(byteContent), &result)
 	if err != nil {
 		log.Fatal(fmt.Println("Invalid config format", err))

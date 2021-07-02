@@ -20,17 +20,17 @@ type Frame struct {
 }
 
 // NewFrame get new instance of frame
-func NewFrame(env string) *Frame {
-	var f = &Frame{env: env}
-	f.server = f.init(env)
+func NewFrame(impl *config.Impl) *Frame {
+	var f = &Frame{env: impl.Env}
+	f.server = f.init(impl)
 	return f
 }
 
 // Init provides a way to initialize the frame
-func (f *Frame) init(env string) *server.Meta {
+func (f *Frame) init(impl *config.Impl) *server.Meta {
 
 	// read the config file and prepare object
-	config := f.initConfig()
+	config := f.initConfig(impl)
 
 	// initCron creates instance of cron
 	cron := f.initCron()
@@ -39,7 +39,7 @@ func (f *Frame) init(env string) *server.Meta {
 	cache := f.initCache(config.Cache.DefaultExpiration, config.Cache.CleanupInterval)
 
 	// initDB create database connection
-	db := f.initDB(config)
+	db := f.initDB(config, impl)
 
 	// initCron creates instance of cron
 	jwt := f.initJWT(config)
@@ -50,7 +50,7 @@ func (f *Frame) init(env string) *server.Meta {
 	gfvalidator.SetFieldsRequiredByDefault(true)
 
 	return &server.Meta{
-		Env:        env,
+		Env:        impl.Env,
 		Config:     config,
 		Cron:       cron,
 		Cache:      cache,
@@ -67,9 +67,8 @@ func (f *Frame) Start(mux *http.ServeMux) {
 }
 
 // initConfig read the configuration file
-func (f *Frame) initConfig() *config.Config {
-	var val = config.Vault{}
-	var config = val.GetConfig(f.env + ".json")
+func (f *Frame) initConfig(impl *config.Impl) *config.Config {
+	var config = impl.GetConfig()
 	return &config
 }
 
@@ -86,10 +85,10 @@ func (f *Frame) initCache(defaultExpiration, cleanupInterval int64) *gfcache.Cac
 }
 
 // initDB read the configuration file
-func (f *Frame) initDB(config *config.Config) *database.Conn {
+func (f *Frame) initDB(config *config.Config, impl *config.Impl) *database.Conn {
 	// create database connection
 	var db = database.Conn{}
-	db.Init(config)
+	db.Init(config, impl)
 	return &db
 }
 

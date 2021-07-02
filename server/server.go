@@ -63,7 +63,7 @@ func (m *Meta) serve() {
 	if m.Config.Env == "prod" {
 		srv.TLSConfig = crypt.TLSServerConfig()
 		log.Println("Listening to port secure HTTPS", addr)
-		log.Fatal(srv.ListenAndServeTLS(os.Args[4], os.Args[5]))
+		log.Fatal(srv.ListenAndServeTLS(os.Args[6], os.Args[7]))
 	} else {
 		log.Println("Listening to port HTTP", addr)
 		log.Fatal(srv.ListenAndServe())

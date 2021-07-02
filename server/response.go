@@ -15,7 +15,7 @@ type Response struct {
 
 // Success returns response as json
 func Success(w http.ResponseWriter, statusCode int, data interface{}) {
-	res := Response{Payload: crypt.Encrypt(data.(string), os.Args[2])}
+	res := Response{Payload: crypt.Encrypt(data.(string), os.Args[4])}
 	w.WriteHeader(statusCode)
 	_ = json.NewEncoder(w).Encode(res)
 }

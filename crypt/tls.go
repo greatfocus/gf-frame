@@ -10,7 +10,7 @@ import (
 
 // TLSServerConfig provides config with cert and key
 func TLSServerConfig() *tls.Config {
-	caCertPEM, err := ioutil.ReadFile(os.Args[3])
+	caCertPEM, err := ioutil.ReadFile(os.Args[5])
 	if err != nil {
 		log.Fatalf("error reading CA certificate: %v", err)
 	}
@@ -21,7 +21,7 @@ func TLSServerConfig() *tls.Config {
 		log.Fatalf("error reading CA certificate: %v", err)
 	}
 
-	cert, err := tls.LoadX509KeyPair(os.Args[4], os.Args[5])
+	cert, err := tls.LoadX509KeyPair(os.Args[6], os.Args[7])
 	if err != nil {
 		log.Fatalf("error reading certificate: %v", err)
 	}
@@ -36,7 +36,7 @@ func TLSServerConfig() *tls.Config {
 
 // TLSClientConfig provides client config with updated cert and key
 func TLSClientConfig() *tls.Config {
-	caCertPEM, err := ioutil.ReadFile(os.Args[3])
+	caCertPEM, err := ioutil.ReadFile(os.Args[5])
 	if err != nil {
 		log.Fatalf("error reading CA certificate: %v", err)
 	}
@@ -47,7 +47,7 @@ func TLSClientConfig() *tls.Config {
 		log.Fatalf("error reading Cert certificate: %v", ok)
 	}
 
-	cert, err := tls.LoadX509KeyPair(os.Args[6], os.Args[7])
+	cert, err := tls.LoadX509KeyPair(os.Args[8], os.Args[9])
 	if err != nil {
 		log.Fatalf("error reading Key certificate: %v", err)
 	}
