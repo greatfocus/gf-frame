@@ -16,13 +16,13 @@ import (
 // Frame struct
 type Frame struct {
 	env    string
-	server *server.Meta
+	Server *server.Meta
 }
 
 // NewFrame get new instance of frame
 func NewFrame(impl *config.Impl) *Frame {
 	var f = &Frame{env: impl.Env}
-	f.server = f.init(impl)
+	f.Server = f.init(impl)
 	return f
 }
 
@@ -62,8 +62,8 @@ func (f *Frame) init(impl *config.Impl) *server.Meta {
 
 // Start spins up the service
 func (f *Frame) Start(mux *http.ServeMux) {
-	f.server.Mux = mux
-	f.server.Start()
+	f.Server.Mux = mux
+	f.Server.Start()
 }
 
 // initConfig read the configuration file
