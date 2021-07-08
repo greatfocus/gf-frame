@@ -24,13 +24,10 @@ type Impl struct {
 
 // GetConfig method gets configf from impl
 func (i *Impl) GetConfig() Config {
-	// read impl config
-	var val = i.read(i.Env + ".json")
-
 	request := Impl{
-		Application: val.Application,
-		Impl:        val.Impl,
-		Env:         val.Env,
+		Application: i.Application,
+		Impl:        i.Impl,
+		Env:         i.Env,
 	}
 	reqBody, err := json.Marshal(request)
 	if err != nil {
@@ -48,7 +45,7 @@ func (i *Impl) GetConfig() Config {
 	}
 
 	// make API call to impl
-	resp, err := client.Post(val.Vault, "application/json", bytes.NewReader(reqBody))
+	resp, err := client.Post(i.Vault, "application/json", bytes.NewReader(reqBody))
 	if err != nil {
 		log.Fatal(fmt.Println("Failed to get Impl config"))
 	}
