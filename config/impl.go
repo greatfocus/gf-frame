@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/greatfocus/gf-sframe/crypt"
@@ -75,35 +74,4 @@ func (i *Impl) GetConfig() Config {
 	config.validate()
 
 	return config
-}
-
-func (i *Impl) read(file string) Impl {
-	log.Println("Reading configuration file")
-	if len(file) < 1 {
-		log.Fatal(fmt.Println("config file name is empty"))
-	}
-
-	jsonFile, err := os.OpenFile(file, os.O_RDONLY, 0600)
-	// if we os.Open returns an error then handle it
-	if err != nil {
-		log.Fatal(fmt.Println("cannot find location of config file", err))
-	}
-
-	// read the config file
-	byteContent, err := ioutil.ReadAll(jsonFile)
-	if err != nil {
-		log.Fatal(fmt.Println("invalid config format", err))
-	}
-
-	// convert the config file bytes to json
-	var result = Impl{}
-	err = json.Unmarshal([]byte(byteContent), &result)
-	if err != nil {
-		log.Fatal(fmt.Println("Invalid config format", err))
-	}
-
-	// the closing of our jsonFile so that we can parse it later on
-	_ = jsonFile.Close()
-
-	return result
 }
